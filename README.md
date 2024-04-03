@@ -11,19 +11,19 @@ libcamera presents a C++ API to applications. It works at the level of configuri
 
 This package does the wrapping for ROS.
 
-Check the configuration file to see available control parameters: [config.yaml](https://github.com/ctu-mrs/libcamera_ros/blob/main/config/param.yaml).
+Check the configuration file for available control parameters: [config.yaml](https://github.com/ctu-mrs/libcamera_ros/blob/main/config/param.yaml).
 
 ## Prequisites
 
-The `libcamera` library is required to be installed and in present path (must be findable by CMake), installation instructions:
+The `libcamera` library is required to be installed and in the present path (must be findable by CMake). Installation instructions:
 
-1. Enable installation from unstable PPA [README.md](https://github.com/ctu-mrs/mrs_uav_system?tab=readme-ov-file#native-installation).
+1. Enable installation from MRS PPA [README.md](https://github.com/ctu-mrs/mrs_uav_system?tab=readme-ov-file#native-installation). The stable PPA version is recommended.
 2. install libcamera package `sudo apt install ros-noetic-libcamera` 
 
-Deb packages are available for arm64 and amd64 architectures. The driver is suppose to be used on arm64 (RaspberryPi5). 
-However, installing it on amd64 makes is easier to work with during development.
+Deb packages are available for arm64 and amd64 architectures. The driver is supposed to be used on arm64 (Raspberry Pi5). 
+However, installing it on amd64 makes it easier to work with during development.
 
-Tested with ROS Melodic, but should work with older/newer versions as well.
+It was tested with ROS Noetic, but it should also work with older/newer versions.
 
 ## Running
 
