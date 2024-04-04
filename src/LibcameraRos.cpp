@@ -472,7 +472,7 @@ namespace libcamera_ros
       }
       catch (const std::runtime_error &e) {
         // ignore
-        ROS_WARN_STREAM("    " << id->name() << " : Not handled by the current version of the libcamera SDK");
+        ROS_INFO_STREAM("    " << id->name() << " : Not handled by the current version of the libcamera SDK");
         continue;
       }
 
