@@ -222,50 +222,36 @@ namespace libcamera_ros
     }
 
     libcamera::StreamConfiguration &scfg = cfg->at(0);
-    // store full list of stream formats
-    const libcamera::StreamFormats &stream_formats = scfg.formats();
-    const std::vector<libcamera::PixelFormat> &pixel_formats = scfg.formats().pixelformats();
-    const std::string format = pixel_format;
-    if (format.empty()) {
+    // get common pixel formats that are supported by the camera and the node
+    const libcamera::StreamFormats stream_formats = get_common_stream_formats(scfg.formats());
+    const std::vector<libcamera::PixelFormat> common_fmt = stream_formats.pixelformats();
+
+    if (common_fmt.empty()){
+      ROS_ERROR("camera does not provide any of the supported pixel formats");
+      ros::shutdown();
+      return;
+    }
+
+    if (pixel_format.empty()) {
+      // auto select first common pixel format
+      scfg.pixelFormat = common_fmt.front();      // get pixel format from provided string
       ROS_INFO_STREAM(stream_formats);
-      // check if the default pixel format is supported
-      if (format_type(scfg.pixelFormat) == FormatType::NONE) {
-        // find first supported pixel format available by camera
-        const auto result = std::find_if(
-            pixel_formats.begin(), pixel_formats.end(),
-            [](const libcamera::PixelFormat &fmt) { return format_type(fmt) != FormatType::NONE; });
-
-        if (result == pixel_formats.end()){
-          ROS_ERROR("camera does not provide any of the supported pixel formats");
-          ros::shutdown();
-          return;
-        }
-
-        scfg.pixelFormat = *result;
-      }
-
       ROS_WARN_STREAM("no pixel format selected, using default: \"" << scfg.pixelFormat << "\"");
+      ROS_WARN_STREAM("set parameter 'pixel_format' to silent this warning");
     }
     else {
       // get pixel format from provided string
-      const libcamera::PixelFormat format_requested = libcamera::PixelFormat::fromString(format);
+      const libcamera::PixelFormat format_requested = libcamera::PixelFormat::fromString(pixel_format);
       if (!format_requested.isValid()) {
         ROS_INFO_STREAM(stream_formats);
-        ROS_ERROR_STREAM("invalid pixel format: \"" << format << "\"");
+        ROS_ERROR_STREAM("invalid pixel format: \"" << pixel_format << "\"");
         ros::shutdown();
         return;
       }
-      // check that requested format is supported by camera
-      if (std::find(pixel_formats.begin(), pixel_formats.end(), format_requested) ==
-          pixel_formats.end()) {
+      // check that the requested format is supported by camera and the node
+      if (std::find(common_fmt.begin(), common_fmt.end(), format_requested) == common_fmt.end()) {
         ROS_INFO_STREAM(stream_formats);
-        ROS_ERROR_STREAM("pixel format \"" << format << "\" is unsupported by camera");
-        ros::shutdown();
-        return;
-      }
-      // check that requested format is supported by node
-      if (format_type(format_requested) == FormatType::NONE){
-        ROS_ERROR_STREAM("pixel format \"" << format << "\" is unsupported by node");
+        ROS_ERROR_STREAM("unsupported pixel format \"" << pixel_format << "\"");
         ros::shutdown();
         return;
       }
@@ -277,6 +263,7 @@ namespace libcamera_ros
       ROS_INFO_STREAM(scfg);
       scfg.size = scfg.formats().sizes(scfg.pixelFormat).back();
       ROS_WARN_STREAM("no dimensions selected, auto-selecting: \"" << scfg.size << "\"");
+      ROS_WARN_STREAM("set parameters 'resolution/width' and 'resolution/height' to silent this warning");
     }
     else {
       scfg.size = size;
@@ -485,7 +472,7 @@ namespace libcamera_ros
       }
       catch (const std::runtime_error &e) {
         // ignore
-        ROS_WARN_STREAM("    " << id->name() << " : Not handled by the current version of the libcamera SDK");
+        ROS_INFO_STREAM("    " << id->name() << " : Not handled by the current version of the libcamera SDK");
         continue;
       }
 
@@ -528,7 +515,9 @@ namespace libcamera_ros
       }
 
       // check bounds and return error
-      if (value < ci.min() || value > ci.max()) {
+      // it seems that for exposition the 0 is used for maximum value, which means infinity
+      // therefore, we are checking if max > min. If yes, check  if the value is lower than max.  
+      if (value < ci.min() || (ci.max() > ci.min() ? value > ci.max() : false)) {
         ROS_ERROR_STREAM(id->name().c_str() << " : parameter value " << value.toString().c_str() << 
             " outside of range: " << ci.toString().c_str());
         return false;
