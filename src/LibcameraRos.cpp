@@ -114,6 +114,11 @@ namespace libcamera_ros
 
       std::string frame_id_;
 
+      bool _use_ros_time_ = false;
+
+      ros::Duration start_time_offset_;
+      bool start_time_offset_obtained_ = false;
+
       struct buffer_info_t
       {
         void *data;
@@ -353,6 +358,9 @@ namespace libcamera_ros
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/control", param_string)){
       updateControlParameter(pv_to_cv(get_ae_exposure_mode(param_string), parameter_ids_["AeExposureMode"]->type()), parameter_ids_["AeExposureMode"]);
     }
+    if (getOptionalParamCheck(nh_, "LibcameraRos", "control/ros_time", param_bool)){
+      _use_ros_time_ = param_bool;
+    }
 
     // allocate stream buffers and create one request per buffer
     stream_ = scfg.stream();
@@ -545,7 +553,14 @@ namespace libcamera_ros
 
       // send image data
       std_msgs::Header hdr;
+
       hdr.stamp = ros::Time().fromNSec(metadata.timestamp);
+      if (_use_ros_time_){
+	      if (!start_time_offset_obtained_){
+		      start_time_offset_ = ros::Time::now()-hdr.stamp;
+	      }
+	      hdr.stamp += start_time_offset_;
+      }
       hdr.frame_id = frame_id_;
       const libcamera::StreamConfiguration &cfg = stream_->configuration();
 
