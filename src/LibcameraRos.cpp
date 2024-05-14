@@ -309,8 +309,8 @@ namespace libcamera_ros
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/exposure_time", param_int)){
       updateControlParameter(pv_to_cv(param_int, parameter_ids_["ExposureTime"]->type()), parameter_ids_["ExposureTime"]);
     }
-    if (getOptionalParamCheck(nh_, "LibcameraRos", "control/fps", param_int)){
-      int64_t frame_time = 1000000 / param_int;
+    if (getOptionalParamCheck(nh_, "LibcameraRos", "control/fps", param_float)){
+      int64_t frame_time = 1000000 / param_float;
       updateControlParameter(pv_to_cv(std::vector<int64_t>{frame_time, frame_time}, parameter_ids_["FrameDurationLimits"]->type()), parameter_ids_["FrameDurationLimits"]);
     }
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/ae_constraint_mode", param_string)){
