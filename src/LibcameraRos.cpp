@@ -172,6 +172,7 @@ namespace libcamera_ros
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "calib_url", calib_url);
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "resolution/width", resolution_width);
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "resolution/height", resolution_height);
+    success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "use_ros_time", _use_ros_time_);
 
     if (!success)
     {
@@ -357,9 +358,6 @@ namespace libcamera_ros
     }
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/control", param_string)){
       updateControlParameter(pv_to_cv(get_ae_exposure_mode(param_string), parameter_ids_["AeExposureMode"]->type()), parameter_ids_["AeExposureMode"]);
-    }
-    if (getOptionalParamCheck(nh_, "LibcameraRos", "control/ros_time", param_bool)){
-      _use_ros_time_ = param_bool;
     }
 
     // allocate stream buffers and create one request per buffer
