@@ -8,6 +8,7 @@ pixel_format: "RGB888" #pixel format documentation: https://libcamera.org/api-ht
 resolution:
   width: 1456
   height: 1088
+use_ros_time: true #If set to true, the time stamps of the output camera images will be expressed in the current ROS time, rather than the time given by the camera sensor
 
 #frame_id and calib_url parameters are set using launch file
 

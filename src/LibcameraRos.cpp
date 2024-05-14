@@ -114,6 +114,11 @@ namespace libcamera_ros
 
       std::string frame_id_;
 
+      bool _use_ros_time_ = false;
+
+      ros::Duration start_time_offset_;
+      bool start_time_offset_obtained_ = false;
+
       struct buffer_info_t
       {
         void *data;
@@ -167,6 +172,7 @@ namespace libcamera_ros
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "calib_url", calib_url);
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "resolution/width", resolution_width);
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "resolution/height", resolution_height);
+    success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "use_ros_time", _use_ros_time_);
 
     if (!success)
     {
@@ -545,7 +551,14 @@ namespace libcamera_ros
 
       // send image data
       std_msgs::Header hdr;
+
       hdr.stamp = ros::Time().fromNSec(metadata.timestamp);
+      if (_use_ros_time_){
+	      if (!start_time_offset_obtained_){
+		      start_time_offset_ = ros::Time::now()-hdr.stamp;
+	      }
+	      hdr.stamp += start_time_offset_;
+      }
       hdr.frame_id = frame_id_;
       const libcamera::StreamConfiguration &cfg = stream_->configuration();
 
