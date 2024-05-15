@@ -556,6 +556,7 @@ namespace libcamera_ros
       if (_use_ros_time_){
 	      if (!start_time_offset_obtained_){
 		      start_time_offset_ = ros::Time::now()-hdr.stamp;
+          start_time_offset_obtained_ = true;
 	      }
 	      hdr.stamp += start_time_offset_;
       }
