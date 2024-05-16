@@ -497,41 +497,41 @@ namespace libcamera_ros
   //}
 
   /* LibcameraRos::updateControlParameter() //{ */
-    bool LibcameraRos::updateControlParameter(const libcamera::ControlValue & value, const libcamera::ControlId *id){
+  bool LibcameraRos::updateControlParameter(const libcamera::ControlValue & value, const libcamera::ControlId *id){
 
-      if (value.isNone()) {
-        ROS_ERROR_STREAM(id->name().c_str() << " : parameter type not defined");
-        return false;
-      }
-      // verify parameter type and dimension against default
-      const libcamera::ControlInfo &ci = camera_->controls().at(id);
-
-      if (value.type() != id->type()) {
-        ROS_ERROR_STREAM(id->name().c_str() << " : parameter types mismatch, expected '" <<
-            std::to_string(id->type()).c_str() << "', got '" << std::to_string(value.type()).c_str() <<
-            "'");
-        return false;
-      }
-
-      const std::size_t extent = get_extent(id);
-      if ((value.isArray() && (extent > 0)) && value.numElements() != extent) {
-        ROS_ERROR_STREAM(id->name().c_str() << " : parameter dimensions mismatch, expected " <<
-            std::to_string(extent).c_str() << ", got " << std::to_string(value.numElements()).c_str());
-        return false;
-      }
-
-      // check bounds and return error
-      // it seems that for exposition the 0 is used for maximum value, which means infinity
-      // therefore, we are checking if max > min. If yes, check  if the value is lower than max.  
-      if (value < ci.min() || (ci.max() > ci.min() ? value > ci.max() : false)) {
-        ROS_ERROR_STREAM(id->name().c_str() << " : parameter value " << value.toString().c_str() << 
-            " outside of range: " << ci.toString().c_str());
-        return false;
-      }
-
-      parameters_[id->id()] = value;
-      return true;
+    if (value.isNone()) {
+      ROS_ERROR_STREAM(id->name().c_str() << " : parameter type not defined");
+      return false;
     }
+    // verify parameter type and dimension against default
+    const libcamera::ControlInfo &ci = camera_->controls().at(id);
+
+    if (value.type() != id->type()) {
+      ROS_ERROR_STREAM(id->name().c_str() << " : parameter types mismatch, expected '" <<
+          std::to_string(id->type()).c_str() << "', got '" << std::to_string(value.type()).c_str() <<
+          "'");
+      return false;
+    }
+
+    const std::size_t extent = get_extent(id);
+    if ((value.isArray() && (extent > 0)) && value.numElements() != extent) {
+      ROS_ERROR_STREAM(id->name().c_str() << " : parameter dimensions mismatch, expected " <<
+          std::to_string(extent).c_str() << ", got " << std::to_string(value.numElements()).c_str());
+      return false;
+    }
+
+    // check bounds and return error
+    // it seems that for exposition the 0 is used for maximum value, which means infinity
+    // therefore, we are checking if max > min. If yes, check  if the value is lower than max.  
+    if (value < ci.min() || (ci.max() > ci.min() ? value > ci.max() : false)) {
+      ROS_ERROR_STREAM(id->name().c_str() << " : parameter value " << value.toString().c_str() << 
+          " outside of range: " << ci.toString().c_str());
+      return false;
+    }
+
+    parameters_[id->id()] = value;
+    return true;
+  }
   //}
 
   /* LibcameraRos::requestComplete() //{ */
@@ -554,11 +554,11 @@ namespace libcamera_ros
 
       hdr.stamp = ros::Time().fromNSec(metadata.timestamp);
       if (_use_ros_time_){
-	      if (!start_time_offset_obtained_){
-		      start_time_offset_ = ros::Time::now()-hdr.stamp;
+        if (!start_time_offset_obtained_){
+          start_time_offset_ = ros::Time::now() - hdr.stamp;
           start_time_offset_obtained_ = true;
-	      }
-	      hdr.stamp += start_time_offset_;
+        }
+        hdr.stamp += start_time_offset_;
       }
       hdr.frame_id = frame_id_;
       const libcamera::StreamConfiguration &cfg = stream_->configuration();
