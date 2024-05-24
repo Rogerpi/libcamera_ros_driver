@@ -329,7 +329,10 @@ namespace libcamera_ros
       updateControlParameter(pv_to_cv(param_float, parameter_ids_["Sharpness"]->type()), parameter_ids_["Sharpness"]);
     }
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/awb_enable", param_bool)){
-      updateControlParameter(pv_to_cv(param_bool, parameter_ids_["AwbEnable"]->type()), parameter_ids_["AwbEnable"]);
+      if (parameter_ids_["AwbEnable"]) // if the parameter is set when not available, we would get a segmentation fault upon extracting its ->type()
+        updateControlParameter(pv_to_cv(param_bool, parameter_ids_["AwbEnable"]->type()), parameter_ids_["AwbEnable"]);
+      else
+        ROS_ERROR_STREAM("[LibcameraRos]: Parameter AwbEnable is not available! Maybe the selected camera is grayscale");
     }
     /* updateControlParameter<std::vector<float>>(std::string("control/colour_gains"), parameter_ids_["ColourGains"]); */
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/ae_enable", param_bool)){
