@@ -5,14 +5,14 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CATKIN_DEPENDENCIES
-  cmake_modules
-  roscpp
-  nodelet
-  sensor_msgs
-  std_msgs
   camera_info_manager
+  cmake_modules
   image_transport
   libcamera
+  nodelet
+  roscpp
+  sensor_msgs
+  std_msgs
   )
 
 set(LIBRARIES
@@ -35,7 +35,7 @@ include_directories(
   )
 
 # library with common utility functions for type conversions
-add_library(LibcameraRos 
+add_library(LibcameraRos
   src/LibcameraRos.cpp
   src/utils/clamp.cpp
   src/utils/format_mapping.cpp
@@ -46,7 +46,6 @@ add_library(LibcameraRos
   src/utils/type_extent.cpp
   src/utils/pv_to_cv.cpp
 )
-
 
 target_link_libraries(LibcameraRos
   ${catkin_LIBRARIES}
@@ -66,7 +65,6 @@ install(DIRECTORY launch config
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   )
 
-install(DIRECTORY ./
+install(FILES nodelets.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  FILES_MATCHING PATTERN "*.xml"
   )
