@@ -47,6 +47,11 @@ add_library(LibcameraRos
   src/utils/pv_to_cv.cpp
 )
 
+add_dependencies(LibcameraRos
+  ${${PROJECT_NAME}_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+  )
+
 target_link_libraries(LibcameraRos
   ${catkin_LIBRARIES}
   )
