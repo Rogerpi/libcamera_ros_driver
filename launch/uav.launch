@@ -4,7 +4,7 @@
   <arg name="UAV_NAME" default="$(optenv UAV_NAME uav1)" />
 
   <arg name="frame_id" default="libcamera_frame"/>
-  <arg name="calib_url" default="file://$(find libcamera_ros)/config/calib/libcamera.yaml"/>
+  <arg name="calib_url" default="file://$(find libcamera_ros_driver)/config/calib/libcamera.yaml"/>
 
   <!-- will it run using GNU debugger? -->
   <arg name="DEBUG" default="false" />
@@ -23,17 +23,12 @@
   <arg unless="$(arg standalone)" name="nodelet_manager" value="$(arg manager)"/>
   <arg     if="$(arg standalone)" name="nodelet_manager" value=""/>
 
-  <env name="LIBPISP_BE_CONFIG_FILE" value="$(optenv LIBPISP_BE_CONFIG_FILE /opt/ros/noetic/share/libpisp/backend_default_config.json)" />
-  <env name="LIBCAMERA_IPA_MODULE_PATH" value="$(optenv LIBCAMERA_IPA_MODULE_PATH /opt/ros/noetic/lib/libcamera/)" />
-  <env name="LIBCAMERA_IPA_CONFIG_PATH" value="$(optenv LIBCAMERA_IPA_CONFIG_PATH /opt/ros/noetic/share/libcamera/ipa)" />
-  <env if="$(arg DEBUG)" name="LIBCAMERA_LOG_LEVELS" value="$(optenv LIBCAMERA_LOG_LEVELS *:DEBUG)" />
-
   <group ns="$(arg UAV_NAME)">
 
-    <node pkg="nodelet" type="nodelet" name="libcamera_ros" args="$(arg nodelet) libcamera_ros/LibcameraRos $(arg nodelet_manager)" launch-prefix="$(arg launch_prefix_debug)" output="screen">
+    <node pkg="nodelet" type="nodelet" name="libcamera_ros_driver" args="$(arg nodelet) libcamera_ros_driver/LibcameraRosDriver $(arg nodelet_manager)" launch-prefix="$(arg launch_prefix_debug)" output="screen">
 
       <!-- Load the default param files -->
-      <rosparam command="load" file="$(find libcamera_ros)/config/param.yaml" />
+      <rosparam command="load" file="$(find libcamera_ros_driver)/config/param.yaml" />
 
       <param if="$(eval arg('custom_config') == '')" name="custom_config" value="" />
       <rosparam if="$(eval not arg('custom_config') == '' and arg('custom_config')[0] == '/')" command="load" file="$(arg custom_config)" />

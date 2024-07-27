@@ -1,16 +1,15 @@
 #pragma once
+
 #include <cstdint>
 #include <libcamera/controls.h>
 #include <libcamera/geometry.h>
 #include <string>
-
 
 namespace std
 {
 std::string
 to_string(const libcamera::ControlType id);
 } // namespace std
-
 
 // map 'ControlType' enums to C++ types
 

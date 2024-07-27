@@ -1,7 +1,6 @@
 #pragma once
 #include <ostream>
 
-
 namespace libcamera
 {
 class CameraManager;

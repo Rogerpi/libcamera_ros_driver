@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(libcamera_ros)
+project(libcamera_ros_driver)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,7 +8,7 @@ set(CATKIN_DEPENDENCIES
   camera_info_manager
   cmake_modules
   image_transport
-  libcamera
+  libcamera_ros
   nodelet
   roscpp
   sensor_msgs
@@ -16,7 +16,7 @@ set(CATKIN_DEPENDENCIES
   )
 
 set(LIBRARIES
-  LibcameraRos
+  LibcameraRosDriver_Driver
   )
 
 find_package(catkin REQUIRED COMPONENTS
@@ -34,9 +34,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   )
 
-# library with common utility functions for type conversions
-add_library(LibcameraRos
-  src/LibcameraRos.cpp
+add_library(LibcameraRosDriver_Driver
+  src/libcamera_ros_driver.cpp
   src/utils/clamp.cpp
   src/utils/format_mapping.cpp
   src/utils/stream_mapping.cpp
@@ -47,12 +46,12 @@ add_library(LibcameraRos
   src/utils/pv_to_cv.cpp
 )
 
-add_dependencies(LibcameraRos
+add_dependencies(LibcameraRosDriver_Driver
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
   )
 
-target_link_libraries(LibcameraRos
+target_link_libraries(LibcameraRosDriver_Driver
   ${catkin_LIBRARIES}
   )
 

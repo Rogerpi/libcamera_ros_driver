@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <package format="2">
 
-  <name>libcamera_ros</name>
+  <name>libcamera_ros_driver</name>
   <version>0.1.0</version>
   <description>Package for libcamera supported cameras (V4L2, Raspberry Pi Camera Modules) for ROS</description>
 
   <author email="Rauch.Christian@gmx.de">Christian Rauch</author>
   <maintainer email="vojtech.spurny@fel.cvut.cz">Vojtech Spurny</maintainer>
+  <maintainer email="tomas.baca@fel.cvut.cz">Tomas Baca</maintainer>
 
   <license>MIT</license>
 
@@ -15,7 +16,7 @@
   <depend>camera_info_manager</depend>
   <depend>cmake_modules</depend>
   <depend>image_transport</depend>
-  <depend>libcamera</depend>
+  <depend>libcamera_ros</depend>
   <depend>nodelet</depend>
   <depend>roscpp</depend>
   <depend>sensor_msgs</depend>
