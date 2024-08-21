@@ -6,6 +6,8 @@
   <arg name="frame_id" default="libcamera_frame"/>
   <arg name="calib_url" default="file://$(find libcamera_ros_driver)/config/calib/libcamera.yaml"/>
 
+  <arg name="camera_name" default="front"/>
+
   <!-- will it run using GNU debugger? -->
   <arg name="DEBUG" default="false" />
   <arg unless="$(arg DEBUG)" name="launch_prefix_debug" value=""/>
@@ -30,7 +32,7 @@
 
   <group ns="$(arg UAV_NAME)">
 
-    <node pkg="nodelet" type="nodelet" name="libcamera_ros_driver" args="$(arg nodelet) libcamera_ros_driver/LibcameraRosDriver $(arg nodelet_manager)" launch-prefix="$(arg launch_prefix_debug)" output="screen">
+    <node pkg="nodelet" type="nodelet" name="camera_$(arg camera_name)" args="$(arg nodelet) libcamera_ros_driver/LibcameraRosDriver $(arg nodelet_manager)" launch-prefix="$(arg launch_prefix_debug)" output="screen">
 
       <!-- Load the default param files -->
       <rosparam command="load" file="$(find libcamera_ros_driver)/config/param.yaml" />
