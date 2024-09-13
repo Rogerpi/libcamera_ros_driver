@@ -15,8 +15,8 @@
   <arg name="custom_config" default="$(optenv CUSTOM_CONFIG)" />
 
   <!-- will it run as standalone nodelet or using a nodelet manager? -->
-  <arg name="standalone" default="false" />
-  <arg name="manager" default="$(arg UAV_NAME)_vio_manager" />
+  <arg name="standalone" default="true" />
+  <arg name="manager" default="$(arg UAV_NAME)_libcamera_ros_manager" />
 
   <arg unless="$(arg standalone)" name="nodelet" value="load"/>
   <arg     if="$(arg standalone)" name="nodelet" value="standalone"/>
@@ -30,10 +30,10 @@
 
   <group ns="$(arg UAV_NAME)">
 
-    <node pkg="nodelet" type="nodelet" name="camera_front" args="$(arg nodelet) libcamera_ros/LibcameraRos $(arg nodelet_manager)" launch-prefix="$(arg launch_prefix_debug)" output="screen">
+    <node pkg="nodelet" type="nodelet" name="camera_mono" args="$(arg nodelet) libcamera_ros/LibcameraRos $(arg nodelet_manager)" launch-prefix="$(arg launch_prefix_debug)" output="screen">
 
       <!-- Load the default param files -->
-      <rosparam command="load" file="$(find libcamera_ros)/config/param.yaml" />
+      <rosparam command="load" file="$(find libcamera_ros)/config/param_ov.yaml" />
 
       <param if="$(eval arg('custom_config') == '')" name="custom_config" value="" />
       <rosparam if="$(eval not arg('custom_config') == '' and arg('custom_config')[0] == '/')" command="load" file="$(arg custom_config)" />

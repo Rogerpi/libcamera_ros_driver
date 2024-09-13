@@ -165,7 +165,7 @@ namespace libcamera_ros
     int resolution_height;
 
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "camera_name", camera_name);
-    success = success && getOptionalParamCheck(nh_, "LibcameraRos", "camera_id", camera_id);
+    success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "camera_id", camera_id);
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "stream_role", stream_role);
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "pixel_format", pixel_format);
     success = success && getCompulsoryParamCheck(nh_, "LibcameraRos", "frame_id", frame_id_);
@@ -190,29 +190,32 @@ namespace libcamera_ros
       ros::shutdown();
       return;
     }
+
+    ROS_INFO_STREAM("MRS_DEBUG");
+    /* ROS_INFO_STREAM(camera_manager_.cameras().size()); */
+    /* ROS_INFO_STREAM("MRS_DEBUG"); */
+    /* ROS_INFO("pes %s", camera_manager_.get("0")->id().c_str()); */
+    /* ROS_INFO_STREAM(camera_manager_.get("1")->id()); */
+    /* ROS_INFO_STREAM("MRS_DEBUG2"); */
     if (!camera_name.empty()){
-      std::vector<std::string> available_cameras;
-      ROS_INFO_STREAM("Available cameras:");
-      for(int i = 0; i < camera_manager_.cameras().size(); i++){
-        available_cameras.push_back(camera_manager_.cameras().at(i)->id());
+      camera_ = camera_manager_.get(camera_name);
+    }else{
+      if(camera_id >= camera_manager_.cameras().size()){
+        ROS_INFO_STREAM(camera_manager_);
+        ROS_ERROR_STREAM("camera with id " << camera_name << " does not exist");
+        ros::shutdown();
+        return;
       }
-      for(int i = 0; i < available_cameras.size(); i++){
-        if(available_cameras.at(i).find(camera_name) != std::string::npos){
-          ROS_INFO_STREAM("found camera: " << camera_name << " index: " << i << " at: " << available_cameras.at(i));
-          camera_id = i;
-          break;
-        }
-      }
+      camera_ = camera_manager_.cameras().at(camera_id);
+      ROS_INFO_STREAM("Use camera by id: " << camera_id);
     }
 
-    if(camera_id >= camera_manager_.cameras().size()){
-      ROS_INFO_STREAM(camera_manager_);
-      ROS_ERROR_STREAM("camera with id " << camera_name << " does not exist");
-      ros::shutdown();
-      return;
-    }
-    camera_ = camera_manager_.cameras().at(camera_id);
-    ROS_INFO_STREAM("Use camera by id: " << camera_id);
+
+    ROS_INFO_STREAM("PES");
+    ROS_INFO_STREAM("cam " << camera_->id());
+    ROS_INFO_STREAM("KOCKA");
+
+
 
     if (!camera_) {
       ROS_INFO_STREAM(camera_manager_);
@@ -227,10 +230,12 @@ namespace libcamera_ros
       return;
     }
 
+    ROS_INFO_STREAM("MRS_DEBUG2");
     // configure camera stream
     std::unique_ptr<libcamera::CameraConfiguration> cfg =
       camera_->generateConfiguration({get_role(stream_role)});
 
+    ROS_INFO_STREAM("MRS_DEBUG3");
     if (!cfg){
       ROS_ERROR("failed to generate configuration");
       ros::shutdown();
@@ -242,12 +247,14 @@ namespace libcamera_ros
     const libcamera::StreamFormats stream_formats = get_common_stream_formats(scfg.formats());
     const std::vector<libcamera::PixelFormat> common_fmt = stream_formats.pixelformats();
 
+    ROS_INFO_STREAM("MRS_DEBUG4");
     if (common_fmt.empty()){
       ROS_ERROR("camera does not provide any of the supported pixel formats");
       ros::shutdown();
       return;
     }
 
+    ROS_INFO_STREAM("MRS_DEBUG5");
     if (pixel_format.empty()) {
       // auto select first common pixel format
       scfg.pixelFormat = common_fmt.front();      // get pixel format from provided string
@@ -274,6 +281,7 @@ namespace libcamera_ros
       scfg.pixelFormat = format_requested;
     }
 
+    ROS_INFO_STREAM("MRS_DEBUG6");
     const libcamera::Size size(resolution_width, resolution_height);
     if (size.isNull()) {
       ROS_INFO_STREAM(scfg);
@@ -288,10 +296,13 @@ namespace libcamera_ros
     // store selected stream configuration
     const libcamera::StreamConfiguration selected_scfg = scfg;
 
+    ROS_INFO_STREAM("MRS_DEBUG7");
     switch (cfg->validate()) {
       case libcamera::CameraConfiguration::Valid:
+        ROS_INFO_STREAM("MRS_DEBUG7a");
         break;
       case libcamera::CameraConfiguration::Adjusted:
+        ROS_INFO_STREAM("MRS_DEBUG7b");
         if (selected_scfg.pixelFormat != scfg.pixelFormat)
           ROS_INFO_STREAM(stream_formats);
         if (selected_scfg.size != scfg.size)
@@ -301,17 +312,21 @@ namespace libcamera_ros
             << "\"");
         break;
       case libcamera::CameraConfiguration::Invalid:
+        ROS_INFO_STREAM("MRS_DEBUG7c");
         ROS_ERROR("failed to valid stream configuration");
         ros::shutdown();
         return;
         break;
     }
+    ROS_INFO_STREAM("MRS_DEBUG81");
 
+    ROS_INFO_STREAM("MRS_DEBUG81" << cfg.get()->at(0).toString());
     if (camera_->configure(cfg.get()) < 0){
       ROS_ERROR("failed to configure streams");
       ros::shutdown();
       return;
     }
+    ROS_INFO_STREAM("MRS_DEBUG8");
     ROS_INFO_STREAM("camera \"" << camera_->id() << "\" configured with " << scfg.toString() << " stream");
 
     declareControlParameters();
@@ -322,6 +337,7 @@ namespace libcamera_ros
     bool param_bool;
     std::vector<int> param_vector_int;
 
+    ROS_INFO_STREAM("MRS_DEBUG9");
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/exposure_time", param_int)){
       updateControlParameter(pv_to_cv(param_int, parameter_ids_["ExposureTime"]->type()), parameter_ids_["ExposureTime"]);
     }
@@ -339,10 +355,14 @@ namespace libcamera_ros
       updateControlParameter(pv_to_cv(param_float, parameter_ids_["Sharpness"]->type()), parameter_ids_["Sharpness"]);
     }
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/awb_enable", param_bool)){
-      if (parameter_ids_["AwbEnable"]) // if the parameter is set when not available, we would get a segmentation fault upon extracting its ->type()
+      if (parameter_ids_["AwbEnable"]){ // if the parameter is set when not available, we would get a segmentation fault upon extracting its ->type()
+        ROS_INFO_STREAM("[LibcameraRos]: Parameter AwbEnable now set");
         updateControlParameter(pv_to_cv(param_bool, parameter_ids_["AwbEnable"]->type()), parameter_ids_["AwbEnable"]);
-      else
+      }
+      else{
         ROS_ERROR_STREAM("[LibcameraRos]: Parameter AwbEnable is not available! Maybe the selected camera is grayscale");
+
+      }
     }
     /* updateControlParameter<std::vector<float>>(std::string("control/colour_gains"), parameter_ids_["ColourGains"]); */
     if (getOptionalParamCheck(nh_, "LibcameraRos", "control/ae_enable", param_bool)){

@@ -15,7 +15,7 @@
   <arg name="custom_config" default="$(optenv CUSTOM_CONFIG)" />
 
   <!-- will it run as standalone nodelet or using a nodelet manager? -->
-  <arg name="standalone" default="false" />
+  <arg name="standalone" default="true" />
   <arg name="manager" default="$(arg UAV_NAME)_vio_manager" />
 
   <arg unless="$(arg standalone)" name="nodelet" value="load"/>
