@@ -1,4 +1,5 @@
 #pragma once
+
 #include <libcamera/controls.h>
 
 libcamera::ControlValue pv_to_cv(const bool &parameter, const libcamera::ControlType &type);

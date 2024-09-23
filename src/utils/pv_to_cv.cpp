@@ -1,5 +1,5 @@
-#include <libcamera_ros/utils/pv_to_cv.h>
-#include <libcamera_ros/utils/types.h>
+#include <libcamera_ros_driver/utils/pv_to_cv.h>
+#include <libcamera_ros_driver/utils/types.h>
 #include <cstdint>
 #include <libcamera/base/span.h>
 #include <libcamera/controls.h>

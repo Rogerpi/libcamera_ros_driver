@@ -1,4 +1,4 @@
-#include <libcamera_ros/utils/format_mapping.h>
+#include <libcamera_ros_driver/utils/format_mapping.h>
 #include <cstdint>
 #include <libcamera/formats.h>
 #include <libcamera/pixel_format.h>

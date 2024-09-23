@@ -1,4 +1,4 @@
-#include <libcamera_ros/utils/control_mapping.h>
+#include <libcamera_ros_driver/utils/control_mapping.h>
 #include <unordered_map>
 #include <string>
 #include <stdexcept>

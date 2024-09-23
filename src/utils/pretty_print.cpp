@@ -1,4 +1,4 @@
-#include <libcamera_ros/utils/pretty_print.h>
+#include <libcamera_ros_driver/utils/pretty_print.h>
 #include <cstddef>
 #include <libcamera/camera.h>
 #include <libcamera/camera_manager.h>

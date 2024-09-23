@@ -1,4 +1,5 @@
 #pragma once
+
 #include <libcamera/stream.h>
 #include <string>
 
