@@ -161,7 +161,7 @@ void LibcameraRosDriver::onInit() {
   int         resolution_height;
 
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "camera_name", camera_name);
-  success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "camera_id", camera_id);
+  success = success && getOptionalParamCheck(nh_, "LibcameraRosDriver", "camera_id", camera_id);
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "stream_role", stream_role);
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "pixel_format", pixel_format);
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "frame_id", frame_id_);
@@ -180,29 +180,35 @@ void LibcameraRosDriver::onInit() {
 
   // start camera manager and check for cameras
   camera_manager_.start();
-
-  if (camera_manager_.cameras().empty()) {
+  if (camera_manager_.cameras().empty()){
     ROS_ERROR("[LibcameraRosDriver]: no cameras available");
     ros::shutdown();
     return;
   }
 
-  if (!camera_name.empty()) {
-    camera_ = camera_manager_.get(camera_name);
-  } else {
-
-    if (camera_id >= camera_manager_.cameras().size()) {
-      ROS_INFO_STREAM("[LibcameraRosDriver]: " << camera_manager_);
-      ROS_ERROR_STREAM("[LibcameraRosDriver]: camera with id " << camera_name << " does not exist");
-      ros::shutdown();
-      return;
+  if (!camera_name.empty()){
+    std::vector<std::string> available_cameras;
+    ROS_INFO_STREAM("[LibcameraRosDriver]: Available cameras:");
+    for(int i = 0; i < camera_manager_.cameras().size(); i++){
+      available_cameras.push_back(camera_manager_.cameras().at(i)->id());
     }
-
-    camera_ = camera_manager_.cameras().at(camera_id);
-
-    ROS_INFO_STREAM("[LibcameraRosDriver]: "
-                    << "Use camera by id: " << camera_id);
+    for(int i = 0; i < available_cameras.size(); i++){
+      if(available_cameras.at(i).find(camera_name) != std::string::npos){
+        ROS_INFO_STREAM("[LibcameraRosDriver]: found camera: " << camera_name << " index: " << i << " at: " << available_cameras.at(i));
+        camera_id = i;
+        break;
+      }
+    }
   }
+
+  if(camera_id >= camera_manager_.cameras().size()){
+    ROS_INFO_STREAM(camera_manager_);
+    ROS_ERROR_STREAM("[LibcameraRosDriver]: camera with id " << camera_name << " does not exist");
+    ros::shutdown();
+    return;
+  }
+  camera_ = camera_manager_.cameras().at(camera_id);
+  ROS_INFO_STREAM("[LibcameraRosDriver]: Use camera by id: " << camera_id);
 
   if (!camera_) {
     ROS_INFO_STREAM("[LibcameraRosDriver]: " << camera_manager_);
@@ -571,7 +577,7 @@ bool LibcameraRosDriver::updateControlParameter(const libcamera::ControlValue &v
   // it seems that for exposition the 0 is used for maximum value, which means infinity
   // therefore, we are checking if max > min. If yes, check  if the value is lower than max.
   if (value < ci.min() || (ci.max() > ci.min() ? value > ci.max() : false)) {
-    ROS_ERROR_STREAM("[LibcameraRosDriver]: " << id->name().c_str() << " : parameter value " << value.toString().c_str()
+      ROS_ERROR_STREAM("[LibcameraRosDriver]: " << id->name().c_str() << " : parameter value " << value.toString().c_str() <<
                                               << " outside of range: " << ci.toString().c_str());
     return false;
   }
