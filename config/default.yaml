@@ -1,23 +1,30 @@
 ## --------------------------------------------------------------
 ## |                    compulsory parameters                   #
 ## --------------------------------------------------------------
-camera_name: "imx296" # if the camera_name is not defined, the id is used
-camera_id: 10 
-stream_role: "still" # [raw, still, video, viewfinder]
-pixel_format: "RGB888" #pixel format documentation: https://libcamera.org/api-html/build_2include_2libcamera_2formats_8h_source.html
-resolution:
-  width: 1456
-  height: 1088
-use_ros_time: true #If set to true, the time stamps of the output camera images will be expressed in the current ROS time, rather than the time given by the camera sensor
 
-#frame_id and calib_url parameters are set using launch file
+camera_name: "ov9281" # if the camera_name is not defined, the id is used
+camera_id: 0
+stream_role: "still" # [raw, still, video, viewfinder]
+
+pixel_format: "RGB888" #pixel format documentation: https://libcamera.org/api-html/build_2include_2libcamera_2formats_8h_source.html
+# pixel_format: "XRGB8888" #pixel format documentation: https://libcamera.org/api-html/build_2include_2libcamera_2formats_8h_source.html
+# pixel_format: "SRGGB8" #pixel format documentation: https://libcamera.org/api-html/build_2include_2libcamera_2formats_8h_source.html
+# pixel_format: "SRGGB16" #pixel format documentation: https://libcamera.org/api-html/build_2include_2libcamera_2formats_8h_source.html
+
+resolution:
+  width: 1280
+  height: 800
+
+use_ros_time: true # if set to true, the time stamps of the output camera images will be expressed in the current ROS time, rather than the time given by the camera sensor
+
+# frame_id and calib_url parameters are set using launch file
 
 ## --------------------------------------------------------------
 ## |                     optional parameters                    #
 ## --------------------------------------------------------------
 # documentation: https://libcamera.org/api-html/namespacelibcamera_1_1controls.html
 control:
-  fps: 30 # [Hz] Note: fps is set as 1000000/frame_duration_limits 
+  fps: 30 # [Hz] Note: fps is set as 1000000/frame_duration_limits
   # exposure_time: 20 # Exposure time (shutter speed) for the frame applied in the sensor device. This value is specified in micro-seconds.
   # stats_output_enable - not supported by the current version of the libcamera SDK
   # noise_reduction_mode - not supported by the current version of the libcamera SDK
@@ -32,7 +39,7 @@ control:
   # hdr_mode - not supported by the current version of the libcamera SDK
   # exposure_value: 0.0 # Specify an Exposure Value (EV) parameter. The EV parameter will only be applied if the AE algorithm is currently enabled.
   # analogue_gain: 1.0 # Analogue gain value applied in the sensor device. The value of the control specifies the gain multiplier applied to all colour channels. This value cannot be lower than 1.0.
-  # awb_enable: false
+  # awb_enable: true
   # awb_mode: "auto" # [auto, incandescent, tungsten, fluorescent, indoor, daylight, cloudy, custom]
   # ae_flicker_period - not supported by the current version of the libcamera SDK
   # ae_metering_mode: "centre-weighted" # [centre-weighted, spot, matrix, custom]
