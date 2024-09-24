@@ -14,7 +14,7 @@
 
   <!-- will it run as standalone nodelet or using a nodelet manager? -->
   <arg name="standalone" default="true" />
-  <arg name="manager" default="$(arg UAV_NAME)_camera_$(arg camera_name)_manager" />
+  <arg name="manager" default="camera_$(arg camera_name)_manager" />
 
   <arg unless="$(arg standalone)" name="nodelet" value="load"/>
   <arg     if="$(arg standalone)" name="nodelet" value="standalone"/>
