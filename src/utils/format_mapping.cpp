@@ -17,6 +17,7 @@ static const std::unordered_map<uint32_t, std::string> map_format_raw = {
   // RGB encodings
   // NOTE: Following the DRM definition, RGB formats codes are stored in little-endian order.
   {cam::R8.fourcc(), ros::MONO8},
+  {cam::R16.fourcc(), ros::MONO16}, //some cameras allow for 10 or more bit resolution
   {cam::RGB888.fourcc(), ros::BGR8},
   {cam::BGR888.fourcc(), ros::RGB8},
   {cam::XRGB8888.fourcc(), ros::BGRA8},
