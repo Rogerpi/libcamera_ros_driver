@@ -35,7 +35,7 @@
 
       <!-- Load the default param files -->
       <rosparam command="load" file="$(arg config)" />
-      <rosparam command="load" file="$(arg custom_config)" />
+      <rosparam unless="$(eval arg('custom_config') == '')" command="load" file="$(arg custom_config)" />
 
       <param name="frame_id" type="string" value="$(arg frame_id)"/>
       <param name="calib_url" type="string" value="$(arg calib_url)"/>
