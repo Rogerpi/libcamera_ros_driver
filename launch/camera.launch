@@ -35,21 +35,10 @@
 
       <!-- Load the default param files -->
       <rosparam command="load" file="$(arg config)" />
-      <rosparam command="load" file="$(arg config)" />
-
-      <param if="$(eval arg('custom_config') == '')" name="custom_config" value="" />
-      <rosparam if="$(eval not arg('custom_config') == '' and arg('custom_config')[0] == '/')" command="load" file="$(arg custom_config)" />
-      <rosparam if="$(eval not arg('custom_config') == '' and not arg('custom_config')[0] == '/')" command="load" file="$(env PWD)/$(arg custom_config)" />
+      <rosparam command="load" file="$(arg custom_config)" />
 
       <param name="frame_id" type="string" value="$(arg frame_id)"/>
       <param name="calib_url" type="string" value="$(arg calib_url)"/>
-
-      <!-- Disable publishing of specific image transport topics -->
-      <rosparam param="image_raw/disable_pub_plugins">
-      - 'image_transport/compressedDepth'
-      - 'image_transport/theora'
-      - 'image_transport/h264'
-      </rosparam>
 
       <!-- Publishers -->
       <remap from="~image_raw" to="~image_raw" />
