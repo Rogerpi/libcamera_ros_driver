@@ -15,13 +15,6 @@ resolution:
   width: 1280
   height: 800
 
-image_raw:
-  disable_pub_plugins: [
-    'image_transport/compressedDepth',
-    'image_transport/theora',
-    'image_transport/h264',
-  ]
-
 use_ros_time: true # if set to true, the time stamps of the output camera images will be expressed in the current ROS time, rather than the time given by the camera sensor
 
 # frame_id and calib_url parameters are set using launch file
