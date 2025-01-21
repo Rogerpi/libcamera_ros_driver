@@ -1,16 +1,15 @@
 <launch>
 
   <!-- defines name of the namespace -->
-  <arg name="UAV_NAME" default="$(optenv UAV_NAME uav1)" />
+  <arg name="robot_name" default="$(optenv robot_name girona500)" />
 
   <arg name="frame_id" default="libcamera_frame"/>
   <arg name="calib_url" default="file://$(find libcamera_ros_driver)/config/calib/libcamera.yaml"/>
 
-  <arg name="camera_name" default="front"/>
+  <arg name="camera_name" default="camera"/>
 
   <!-- config files -->
-  <arg name="config" default="$(find libcamera_ros_driver)/config/default.yaml" />
-  <arg name="custom_config" default="$(optenv CUSTOM_CONFIG)" />
+  <arg name="config" default="$(find libcamera_ros_driver)/config/uhq.yaml" />
 
   <!-- will it run as standalone nodelet or using a nodelet manager? -->
   <arg name="standalone" default="true" />
@@ -21,11 +20,7 @@
   <arg unless="$(arg standalone)" name="nodelet_manager" value="$(arg manager)"/>
   <arg     if="$(arg standalone)" name="nodelet_manager" value=""/>
 
-  <env name="LIBPISP_BE_CONFIG_FILE" value="$(optenv LIBPISP_BE_CONFIG_FILE /opt/ros/noetic/share/libpisp/backend_default_config.json)" />
-  <env name="LIBCAMERA_IPA_MODULE_PATH" value="$(optenv LIBCAMERA_IPA_MODULE_PATH /opt/ros/noetic/lib/libcamera/)" />
-  <env name="LIBCAMERA_IPA_CONFIG_PATH" value="$(optenv LIBCAMERA_IPA_CONFIG_PATH /opt/ros/noetic/share/libcamera/ipa)" />
-
-  <group ns="$(arg UAV_NAME)">
+  <group ns="$(arg robot_name)">
 
     <node unless="$(arg standalone)" pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" output="screen">
       <param name="num_worker_threads" value="8" />
@@ -35,7 +30,6 @@
 
       <!-- Load the default param files -->
       <rosparam command="load" file="$(arg config)" />
-      <rosparam unless="$(eval arg('custom_config') == '')" command="load" file="$(arg custom_config)" />
 
       <param name="frame_id" type="string" value="$(arg frame_id)"/>
       <param name="calib_url" type="string" value="$(arg calib_url)"/>

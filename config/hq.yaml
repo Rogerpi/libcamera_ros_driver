@@ -2,7 +2,7 @@
 ## |                    compulsory parameters                   #
 ## --------------------------------------------------------------
 
-camera_name: "ov9281" # if the camera_name is not defined, the id is used
+camera_name: "" # if the camera_name is not defined, the id is used
 camera_id: 0
 stream_role: "still" # [raw, still, video, viewfinder]
 
@@ -12,8 +12,8 @@ pixel_format: "RGB888" #pixel format documentation: https://libcamera.org/api-ht
 # pixel_format: "SRGGB16" #pixel format documentation: https://libcamera.org/api-html/build_2include_2libcamera_2formats_8h_source.html
 
 resolution:
-  width: 1280
-  height: 800
+  width: 2028
+  height: 1520
 
 use_ros_time: true # if set to true, the time stamps of the output camera images will be expressed in the current ROS time, rather than the time given by the camera sensor
 
@@ -24,7 +24,7 @@ use_ros_time: true # if set to true, the time stamps of the output camera images
 ## --------------------------------------------------------------
 # documentation: https://libcamera.org/api-html/namespacelibcamera_1_1controls.html
 control:
-  fps: 30 # [Hz] Note: fps is set as 1000000/frame_duration_limits
+  fps: 10 # [Hz] Note: fps is set as 1000000/frame_duration_limits
   # exposure_time: 20 # Exposure time (shutter speed) for the frame applied in the sensor device. This value is specified in micro-seconds.
   # stats_output_enable - not supported by the current version of the libcamera SDK
   # noise_reduction_mode - not supported by the current version of the libcamera SDK
