@@ -1,15 +1,15 @@
 <launch>
 
   <!-- defines name of the namespace -->
-  <arg name="robot_name" default="$(optenv robot_name girona500)" />
+  <arg name="robot_name" default="$(optenv ROBOT_NAME girona500)" />
+  <arg name="manipulator_name" default="$(optenv MANIPULATOR_NAME bravo)" />
+    <!-- config files -->
+  <arg name="config" default="$(find libcamera_ros_driver)/config/$(optenv IMAGE_QUALITY lq).yaml" />
 
+  <arg name="camera_name" default="camera"/>
   <arg name="frame_id" default="libcamera_frame"/>
   <arg name="calib_url" default="file://$(find libcamera_ros_driver)/config/calib/libcamera.yaml"/>
 
-  <arg name="camera_name" default="camera"/>
-
-  <!-- config files -->
-  <arg name="config" default="$(find libcamera_ros_driver)/config/$(optenv IMAGE_QUALITY lq).yaml" />
 
   <!-- will it run as standalone nodelet or using a nodelet manager? -->
   <arg name="standalone" default="true" />
@@ -20,7 +20,7 @@
   <arg unless="$(arg standalone)" name="nodelet_manager" value="$(arg manager)"/>
   <arg     if="$(arg standalone)" name="nodelet_manager" value=""/>
 
-  <group ns="$(arg robot_name)">
+  <group ns="$(arg robot_name)/$(arg manipulator_name)">
 
     <node unless="$(arg standalone)" pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" output="screen">
       <param name="num_worker_threads" value="8" />
