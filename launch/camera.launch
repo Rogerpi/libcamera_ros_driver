@@ -9,7 +9,7 @@
   <arg name="camera_name" default="camera"/>
 
   <!-- config files -->
-  <arg name="config" default="$(find libcamera_ros_driver)/config/uhq.yaml" />
+  <arg name="config" default="$(find libcamera_ros_driver)/config/$(optenv IMAGE_QUALITY lq).yaml" />
 
   <!-- will it run as standalone nodelet or using a nodelet manager? -->
   <arg name="standalone" default="true" />
