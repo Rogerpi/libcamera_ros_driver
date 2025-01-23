@@ -6,7 +6,7 @@
   <!-- config files -->
   <arg name="config" default="$(find libcamera_ros_driver)/config/$(optenv IMAGE_QUALITY lq).yaml" />
 
-  <arg name="camera_name" default="camera" />
+  <arg name="camera_name" default="gripper" />
   <arg name="frame_id" default="libcamera_frame" />
   <arg name="calib_url" default="file://$(find libcamera_ros_driver)/config/calib/libcamera.yaml" />
 
