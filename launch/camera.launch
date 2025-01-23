@@ -29,7 +29,7 @@
 
     <node pkg="nodelet" type="nodelet" name="camera_$(arg camera_name)"
       args="$(arg nodelet) libcamera_ros_driver/LibcameraRosDriver $(arg nodelet_manager)"
-      output="screen">
+      respawn="true" output="screen">
 
       <!-- Load the default param files -->
       <rosparam command="load" file="$(arg config)" />
