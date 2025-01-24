@@ -4,7 +4,8 @@ import rosnode
 import time
 import subprocess
 
-timeout = 10
+dt = 10
+max_attempts = 6
 
 def get_rosout_pid():
     try:
@@ -16,22 +17,32 @@ def get_rosout_pid():
         return None
 
 pid = None
+
 while True:
     pid = get_rosout_pid()
     if pid is not None:
         break
     print("Waiting for roscore to start...")
-    time.sleep(timeout)
+    time.sleep(dt)
 
 print("rosout PID:", pid)
+
+current_attempts = 0
 
 while True:
     current_pid = get_rosout_pid()
     if current_pid is None:
-        print("rosout node is not alive. Exiting.")
-        exit(1)
+        if current_attempts < max_attempts:
+            print("rosout node not found. Waiting...")
+            current_attempts += 1
+        else:
+            print("rosout node is assumed dead. Exiting.")
+            exit(1)
+    else:
+        current_attempts = 0
+
     if current_pid != pid:
         print("rosout node has been restarted. Exiting.")
         exit(1)
 
-    time.sleep(timeout)
+    time.sleep(dt)
