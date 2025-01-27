@@ -39,6 +39,7 @@
 
       <param name="frame_id" type="string" value="$(arg camera_frame_id)" />
       <param name="calib_url" type="string" value="$(arg calib_url)" />
+      <param name="camera_name" type="string" value="$(arg camera_name)" />
 
       <!-- Publishers -->
       <remap from="~image_raw" to="~image_raw" />
