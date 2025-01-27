@@ -1,17 +1,17 @@
 image_width: 1333
 image_height: 990
-camera_name: camera_gripper
+camera_name: narrow_stereo
 camera_matrix:
   rows: 3
   cols: 3
-  data: [870.65969,   0.     , 673.14958,
-           0.     , 888.84235, 522.8184 ,
+  data: [536.6129 ,  -1.18249, 666.1006 ,
+           0.     , 538.42925, 498.70068,
            0.     ,   0.     ,   1.     ]
-distortion_model: plumb_bob
+distortion_model: equidistant
 distortion_coefficients:
   rows: 1
-  cols: 5
-  data: [-0.435507, 0.143595, -0.003897, -0.005788, 0.000000]
+  cols: 4
+  data: [-0.089828, 0.253460, 0.176064, -0.197605]
 rectification_matrix:
   rows: 3
   cols: 3
@@ -21,6 +21,6 @@ rectification_matrix:
 projection_matrix:
   rows: 3
   cols: 4
-  data: [609.81202,   0.     , 657.85386,   0.     ,
-           0.     , 742.13274, 529.59281,   0.     ,
+  data: [536.6129 ,  -1.18249, 666.1006 ,   0.     ,
+           0.     , 538.42925, 498.70068,   0.     ,
            0.     ,   0.     ,   1.     ,   0.     ]
