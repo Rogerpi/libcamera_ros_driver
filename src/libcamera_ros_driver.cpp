@@ -110,6 +110,7 @@ private:
   std::string frame_id_;
 
   bool _use_ros_time_ = false;
+  bool remove_stride_ = false;
 
   ros::Duration start_time_offset_;
   bool          start_time_offset_obtained_ = false;
@@ -159,7 +160,8 @@ void LibcameraRosDriver::onInit() {
   int         camera_id;
   int         resolution_width;
   int         resolution_height;
-  bool        remove_stride = false;
+  
+  remove_stride_ = false;
 
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "camera_name", camera_name);
   success = success && getOptionalParamCheck(nh_, "LibcameraRosDriver", "camera_id", camera_id);
@@ -170,7 +172,7 @@ void LibcameraRosDriver::onInit() {
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "resolution/width", resolution_width);
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "resolution/height", resolution_height);
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "use_ros_time", _use_ros_time_);
-  success = success && getOptionalParamCheck(nh_, "LibcameraRosDriver", "remove_stride", remove_stride);
+  success = success && getOptionalParamCheck(nh_, "LibcameraRosDriver", "remove_stride", remove_stride_);
 
 
   if (!success) {
@@ -636,7 +638,7 @@ void LibcameraRosDriver::requestComplete(libcamera::Request *request) {
       image_msg.height       = cfg.size.height;
       image_msg.encoding     = get_ros_encoding(cfg.pixelFormat);
       image_msg.is_bigendian = (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__);
-      if (!remove_stride)
+      if (!remove_stride_)
       {
         image_msg.step = cfg.stride;
         image_msg.data.resize(buffer_info_[buffer].size);
