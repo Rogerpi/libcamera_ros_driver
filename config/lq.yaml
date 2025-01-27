@@ -11,6 +11,8 @@ pixel_format: "RGB888" #pixel format documentation: https://libcamera.org/api-ht
 # pixel_format: "SRGGB8" #pixel format documentation: https://libcamera.org/api-html/build_2include_2libcamera_2formats_8h_source.html
 # pixel_format: "SRGGB16" #pixel format documentation: https://libcamera.org/api-html/build_2include_2libcamera_2formats_8h_source.html
 
+remove_stride: true # if set to true, the output image will be a continuous image without any padding
+
 resolution:
   width: 1333
   height: 990
