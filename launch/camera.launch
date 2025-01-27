@@ -3,21 +3,25 @@
   <!-- defines name of the namespace -->
   <arg name="robot_name" default="$(optenv ROBOT_NAME girona500)" />
   <arg name="manipulator_name" default="$(optenv MANIPULATOR_NAME bravo)" />
+  
+  <arg name="camera_name" default="camera" />
+  
   <!-- config files -->
   <arg name="config" default="$(find libcamera_ros_driver)/config/$(optenv IMAGE_QUALITY lq).yaml" />
-
-  <arg name="camera_name" default="camera" />
-  <arg name="camera_frame_id" default="$(optenv CAMERA_FRAME_ID gripper_camera)" />
   <arg name="calib_url"
     default="file://$(find libcamera_ros_driver)/config/calib/$(optenv IMAGE_QUALITY lq)_calibration.yaml" />
 
+  <!-- temp args -->
+  <arg name="gripper_ns" default="$(arg robot_name)/$(arg manipulator_name)/gripper" />
+  <arg name="camera_frame_id" default="$(arg gripper_ns)/$(arg camera_name)" />
+  
+  <!-- Nodeled args -->
   <arg name="nodelet_manager" default="nodelet_manager" />
 
   <arg name="respawn" default="true" />
   <arg if="$(arg respawn)" name="bond" value="" />
   <arg unless="$(arg respawn)" name="bond" value="--no-bond" />
 
-  <arg name="gripper_ns" default="$(arg robot_name)/$(arg manipulator_name)/gripper" />
 
   <group ns="$(arg gripper_ns)">
     <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="manager" required="true"
