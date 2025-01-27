@@ -159,6 +159,7 @@ void LibcameraRosDriver::onInit() {
   int         camera_id;
   int         resolution_width;
   int         resolution_height;
+  bool        remove_stride = false;
 
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "camera_name", camera_name);
   success = success && getOptionalParamCheck(nh_, "LibcameraRosDriver", "camera_id", camera_id);
@@ -169,6 +170,8 @@ void LibcameraRosDriver::onInit() {
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "resolution/width", resolution_width);
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "resolution/height", resolution_height);
   success = success && getCompulsoryParamCheck(nh_, "LibcameraRosDriver", "use_ros_time", _use_ros_time_);
+  success = success && getOptionalParamCheck(nh_, "LibcameraRosDriver", "remove_stride", remove_stride);
+
 
   if (!success) {
     ROS_ERROR("[LibcameraRosDriver]: Some compulsory parameters were not loaded successfully, ending the node");
@@ -631,11 +634,27 @@ void LibcameraRosDriver::requestComplete(libcamera::Request *request) {
       image_msg.header       = hdr;
       image_msg.width        = cfg.size.width;
       image_msg.height       = cfg.size.height;
-      image_msg.step         = cfg.stride;
       image_msg.encoding     = get_ros_encoding(cfg.pixelFormat);
       image_msg.is_bigendian = (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__);
-      image_msg.data.resize(buffer_info_[buffer].size);
-      memcpy(image_msg.data.data(), buffer_info_[buffer].data, buffer_info_[buffer].size);
+      if (!remove_stride)
+      {
+        image_msg.step = cfg.stride;
+        image_msg.data.resize(buffer_info_[buffer].size);
+        memcpy(image_msg.data.data(), buffer_info_[buffer].data, buffer_info_[buffer].size);
+      }
+      else{
+        // TODO: Change 3 by the number of bytes per pixel
+        // TODO: Little endian vs big endian
+        image_msg.step = cfg.size.width * 3;
+        image_msg.data.resize(cfg.size.width * cfg.size.height * 3);
+
+        // each row of the image is stored in memory as RGBRGBRGB...00000 with stride padding
+        // remove the padding to get the correct image
+        for (int i = 0; i < cfg.size.height; i++)
+        {
+          memcpy(image_msg.data.data() + i * cfg.size.width * 3, buffer_info_[buffer].data + i * cfg.stride, cfg.size.width * 3);
+        }
+      }
 
     } else {
       ROS_ERROR_STREAM("[LibcameraRosDriver]: unsupported pixel format: " << stream_->configuration().pixelFormat.toString());
