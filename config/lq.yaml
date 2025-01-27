@@ -2,7 +2,7 @@
 ## |                    compulsory parameters                   #
 ## --------------------------------------------------------------
 
-camera_name: "" # if the camera_name is not defined, the id is used
+#camera_name: "" # if the camera_name is not defined, the id is used
 camera_id: 0
 stream_role: "still" # [raw, still, video, viewfinder]
 
