@@ -654,7 +654,9 @@ void LibcameraRosDriver::requestComplete(libcamera::Request *request) {
         // remove the padding to get the correct image
         for (int i = 0; i < cfg.size.height; i++)
         {
-          memcpy(image_msg.data.data() + i * cfg.size.width * 3, buffer_info_[buffer].data + i * cfg.stride, cfg.size.width * 3);
+          //memcpy(image_msg.data.data() + i * cfg.size.width * 3, buffer_info_[buffer].data + i * cfg.stride, cfg.size.width * 3);
+          // the previous line causes error arithmetic on a pointer to void
+          memcpy(image_msg.data.data() + i * cfg.size.width * 3, static_cast<uint8_t*>(buffer_info_[buffer].data) + i * cfg.stride, cfg.size.width * 3);
         }
       }
 
